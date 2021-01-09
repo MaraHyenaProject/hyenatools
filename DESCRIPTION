@@ -1,0 +1,27 @@
+Package: hyenatools
+Title: Data Analysis Tools for Mara Hyena Project
+Version: 0.0.0.9000
+Authors@R: 
+     c(person(given = "Eli",
+           family = "Strauss",
+           role = c("aut", "cre"),
+           email = "straussed@gmail.com"),
+      person(given = "Zach",
+           family = "Laubach",
+           role = c("aut"),
+           email = "zchlaubach@gmail.com"))
+Description: These tools complement the MHP data package and provide useful functions for interacting with the long-term data.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 3.5.0)
+Imports:
+   dplyr,
+   tidyr,
+   crayon,
+   httr,
+   lubridate
