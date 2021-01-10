@@ -4,42 +4,55 @@
 #' Cohorts are specific to each cub. To be included in a cohort, cubs must have a den
 #' period that overlaps with the focal cub by at least 4 months and must be seen
 #' with focal cub at least once while they are both den dependent. Den period is
-#' calculated as (DOB to DenGrad), (DOB to 1yr old) if no DenGrad specified, or
-#' (DOB to Disappeared) if the cub died before graduation or 1 year old.
+#' calculated as (dob to dengrad), (dob to 1yr old) if no dengrad specified, or
+#' (dob to disappeared) if the cub died before graduation or 1 year old.
 #'
 #' @param List of ids to calculate cohort size for
 #'
 #' @return A data frame with the ids supplied, size of cohort, whether the id
-#' survived to graduation (1 = yes, 0 = no) and the list of cubs in the cohort.
+#' survived to graduation (1 = yes, 0 = no) and the list of cubs in the cohort
+#' (this list includes the id provided, but the cohort size does not).
 #'
 #' @export
 
 calculate_cohort_size <- function(ids){
+  ##############################################################################
+  ### Error checking ###
+  # Make sure tables and package exists
+  if(!'hyenadata' %in% names(sessionInfo()$otherPkgs))
+    warning('hyenadata package not loaded. This function may not work as expected.')
+
   if(!exists('tblHyenas')){
     data("tblHyenas")
+    warning('tblHyenas not in environment. Loading tblHyenas from hyenadata package')
   }
   if(!exists('tblLifeHistory')){
     data("tblLifeHistory")
+    warning('tblLifeHistory not in environment. Loading tblLifeHistory from hyenadata package')
   }
-  if(!exists('tblLifeHistory.long')){
-    data("tblLifeHistory.long")
+  if(!exists('tblLifeHistory.wide')){
+    data("tblLifeHistory.wide")
+    warning('tblLifeHistory.wide not in environment. Loading tblLifeHistory.wide from hyenadata package')
   }
   if(!exists('tblHyenasPerSession')){
     data("tblHyenasPerSession")
+    warning('tblHyenasPerSession not in environment. Loading tblHyenasPerSession from hyenadata package')
   }
   if(!exists('tblSessions')){
     data("tblSessions")
+    warning('tblSessions not in environment. Loading tblSessions from hyenadata package')
   }
 
 
   ids <- tolower(as.character(ids))
-  ids.full <- ids
-  missing <- which(!ids %in% tblLifeHistory.long$id)
+  missing <- which(!ids %in% tblLifeHistory.wide$id)
   if(length(missing)){
     warning('Some hyenas not in tblLifeHistory! Removing:\n', paste(ids[missing],
                                                                     collapse = ','))
     ids <- ids[-missing]
   }
+  ##############################################################################
+  ids.full <- ids
 
   if(!'date' %in% names(tblHyenasPerSession)){
     tblhps.tmp <- dplyr::left_join(tblHyenasPerSession, tblSessions[,c('session', 'date')],
@@ -47,42 +60,42 @@ calculate_cohort_size <- function(ids){
   }else{tblhps.tmp <- tblHyenasPerSession}
 
 
-  cubs.of.interest <- dplyr::filter(dplyr::left_join(tblHyenas, tblLifeHistory.long, by = 'id'), id %in% ids)
+  cubs.of.interest <- dplyr::filter(dplyr::left_join(tblHyenas, tblLifeHistory.wide, by = 'id'), id %in% ids)
 
-  if(any(is.na(cubs.of.interest$DOB))){
-    warning(paste0('Some ids provided have no DOB. Excluding:\n',
-                   paste(dplyr::filter(cubs.of.interest, is.na(DOB))$id, collapse = ',')))
-    cubs.of.interest <- dplyr::filter(cubs.of.interest, !is.na(DOB))
+  if(any(is.na(cubs.of.interest$dob))){
+    warning(paste0('Some ids provided have no dob. Excluding:\n',
+                   paste(dplyr::filter(cubs.of.interest, is.na(dob))$id, collapse = ',')))
+    cubs.of.interest <- dplyr::filter(cubs.of.interest, !is.na(dob))
   }
 
-  cubs.of.interest$clan <- dplyr::left_join(cubs.of.interest, dplyr::filter(tblLifeHistory, event_code == 'DOB'), by = 'id')$event_data
+  cubs.of.interest$clan <- cubs.of.interest$dob_event_data
 
-  cohortInfo <- dplyr::filter(dplyr::left_join(tblHyenas, tblLifeHistory.long, by = 'id'), !is.na(DOB))
-  cohortInfo$clan <-  dplyr::left_join(cohortInfo, dplyr::filter(tblLifeHistory, event_code == 'DOB'), by = 'id')$event_data
+  cohortInfo <- dplyr::filter(dplyr::left_join(tblHyenas, tblLifeHistory.wide, by = 'id'), !is.na(dob))
+  cohortInfo$clan <-  cohortInfo$dob_event_data
   cohortInfo <- dplyr::filter(cohortInfo, clan %in% cubs.of.interest$clan)
-  cohortInfo$DenEnd <- NA
+  cohortInfo$denend <- NA
   cohortInfo$Survive_to_Grad <- 1
   for(row in 1:nrow(cohortInfo)){
-    if(is.na(cohortInfo[row,'DenGrad'])){
-      if(is.na(cohortInfo[row,'Disappeared'])){
-        cohortInfo[row,'DenEnd'] <- cohortInfo[row,'DOB']+365
+    if(is.na(cohortInfo[row,'dengrad'])){
+      if(is.na(cohortInfo[row,'disappeared'])){
+        cohortInfo[row,'denend'] <- cohortInfo[row,'dob']+365
       }else{
-        if(cohortInfo[row,]$DOB+365 < cohortInfo[row,]$Disappeared){
-          cohortInfo[row,'DenEnd'] <- cohortInfo[row,]$DOB+365
+        if(cohortInfo[row,]$dob+365 < cohortInfo[row,]$disappeared){
+          cohortInfo[row,'denend'] <- cohortInfo[row,]$dob+365
         }else{
-          cohortInfo[row,'DenEnd'] <- cohortInfo[row,]$Disappeared
+          cohortInfo[row,'denend'] <- cohortInfo[row,]$disappeared
           cohortInfo[row,]$Survive_to_Grad <- 0
         }
       }
-    }else{cohortInfo[row,'DenEnd'] <- min(as.numeric(cohortInfo[row,'DenGrad']),  as.numeric(cohortInfo[row,'DOB']+365), na.rm = T) }
+    }else{cohortInfo[row,'denend'] <- min(as.numeric(cohortInfo[row,'dengrad']),  as.numeric(cohortInfo[row,'dob']+365), na.rm = T) }
   }
 
   calc_overlap <- function(cub1, cub2){
     return(
       length(
         dplyr::intersect(
-          seq(as.numeric(cohortInfo[cohortInfo$id == cub1,'DOB']), cohortInfo[cohortInfo$id == cub1, 'DenEnd']),
-          seq(as.numeric(cohortInfo[cohortInfo$id == cub2,'DOB']), cohortInfo[cohortInfo$id == cub2, 'DenEnd'])
+          seq(as.numeric(cohortInfo[cohortInfo$id == cub1,'dob']), cohortInfo[cohortInfo$id == cub1, 'denend']),
+          seq(as.numeric(cohortInfo[cohortInfo$id == cub2,'dob']), cohortInfo[cohortInfo$id == cub2, 'denend'])
         )
       )
     )
@@ -93,11 +106,11 @@ calculate_cohort_size <- function(ids){
       length(
         dplyr::intersect(
           dplyr::filter(tblhps.tmp, id == cub1,
-                        date >= cohortInfo[cohortInfo$id == cub1,'DOB'],
-                        date <= cohortInfo[cohortInfo$id == cub1,'DenEnd'])$session,
+                        date >= cohortInfo[cohortInfo$id == cub1,'dob'],
+                        date <= cohortInfo[cohortInfo$id == cub1,'denend'])$session,
           dplyr::filter(tblhps.tmp, id == cub2,
-                        date >= cohortInfo[cohortInfo$id == cub2,'DOB'],
-                        date <= cohortInfo[cohortInfo$id == cub2,'DenEnd'])$session
+                        date >= cohortInfo[cohortInfo$id == cub2,'dob'],
+                        date <= cohortInfo[cohortInfo$id == cub2,'denend'])$session
         )
       )
     )

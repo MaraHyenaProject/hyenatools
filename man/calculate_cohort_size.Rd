@@ -11,13 +11,14 @@ calculate_cohort_size(ids)
 }
 \value{
 A data frame with the ids supplied, size of cohort, whether the id
-survived to graduation (1 = yes, 0 = no) and the list of cubs in the cohort.
+survived to graduation (1 = yes, 0 = no) and the list of cubs in the cohort
+(this list includes the id provided, but the cohort size does not).
 }
 \description{
 Calculates a cohort size (and cohort members) experienced by the supplied cub.
 Cohorts are specific to each cub. To be included in a cohort, cubs must have a den
 period that overlaps with the focal cub by at least 4 months and must be seen
 with focal cub at least once while they are both den dependent. Den period is
-calculated as (DOB to DenGrad), (DOB to 1yr old) if no DenGrad specified, or
-(DOB to Disappeared) if the cub died before graduation or 1 year old.
+calculated as (dob to dengrad), (dob to 1yr old) if no dengrad specified, or
+(dob to disappeared) if the cub died before graduation or 1 year old.
 }
