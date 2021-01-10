@@ -33,18 +33,12 @@ get_clan_status <- function(ids, dates, end.of.data = '2200-01-01'){
   }
 
   # Make sure tables and package exists
-  if(!'hyenadata' %in% names(sessionInfo()$otherPkgs)){
-    if(exists('tblClanMembership')){
-      warning('hyenadata package not loaded. This function may not work as expected.')
-    }else{
-      stop('hyenadata package not loaded. Load hyenadata package to proceed')
-    }
+  if(!'hyenadata' %in% names(sessionInfo()$otherPkgs))
+    warning('hyenadata package not loaded. This function may not work as expected.')
 
-  }else{
-    if(!exists('tblClanMembership')){
-      data(tblClanMembership)
-      warning('tblClanMembership not in environment. Loading tblClanMembership from hyenadata package')
-    }
+  if(!exists('tblClanMembership')){
+    data(tblClanMembership)
+    warning('tblClanMembership not in environment. Loading tblClanMembership from hyenadata package')
   }
 
   if(any(!ids %in% tblClanMembership$id)){
