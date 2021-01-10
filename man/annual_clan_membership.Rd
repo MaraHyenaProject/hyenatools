@@ -11,8 +11,15 @@ annual_clan_membership(clans, years)
 
 \item{clan}{One (or more) clan names, supplied as a character vector.}
 }
+\value{
+Returns tblClanMembership filtered to all individuals who were a member
+of the supplied clan at some point in the supplied year. Columns include the
+start and end date of membership in the clan.
+}
 \description{
-Identifies all hyenas alive in a specified year for the given clan.
+Identifies all hyenas alive in a specified year for the given clan. This count
+includes any individuals who were considered immigrants or residents and who
+were alive and in the clan for at least one day during the year.
 }
 \examples{
 ## returns all hyenas from serena clans 2010-2012
