@@ -11,7 +11,10 @@ get_clan_status(ids, dates, end.of.data = "2200-01-01")
 
 \item{end.of.data}{The date at which upper bounds of intervals with NA as final date are considered to end. You are unlikely to need to provide this.}
 
-\item{date}{One or more dates. If more than one date, dates must match length of ids}
+\item{date}{One or more dates. If more than one date, dates must match length of ids. If one date, the date is recycled for each id.}
+}
+\value{
+A dataframe with one row per individual in ids, including date for each individual, residence status (e.g., resident, immigrant), and clan membership. If There is no entry for an individual on the given date, NA is returned for clan and status.
 }
 \description{
 Identifies the clan that a hyena belongs to at a provided date and it's status (i.e., natal or resident)
