@@ -3,5 +3,7 @@
 export(annual_clan_membership)
 export(calculate_cohort_size)
 export(get_clan_status)
+export(get_maternal_relatedness)
+export(get_monthly_clan_membership)
 export(is_descendant)
 importFrom(lubridate,"%within%")
