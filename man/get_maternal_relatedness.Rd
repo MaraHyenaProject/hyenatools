@@ -12,7 +12,9 @@ get_maternal_relatedness(id1, id2)
 \item{id2}{A string specifying the hyena id for second individual}
 }
 \description{
-Returns a value for expected relatedness between two individuals based on maternal pedigree. Returns NA if individuals are unrelated
+Returns a value for expected relatedness between two individuals based on maternal pedigree.
+It assumes all siblingships are half siblings (i.e. sibs = 0.25)
+Returns NA if individuals are unrelated
 }
 \examples{
 

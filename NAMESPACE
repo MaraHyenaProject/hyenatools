@@ -2,6 +2,7 @@
 
 export(annual_clan_membership)
 export(calculate_cohort_size)
+export(get_association_network)
 export(get_clan_status)
 export(get_maternal_ancestors)
 export(get_maternal_relatedness)
