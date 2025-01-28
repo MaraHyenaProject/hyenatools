@@ -25,6 +25,7 @@ get_association_network <- function(clan, start, end,
                                     output_pdf_pathname = NULL){
 
   suppressWarnings(data(tblSessions, tblHyenasPerSession, overwrite = F))
+  library(igraph)
   tbls <- tblSessions
   tblhps <- tblHyenasPerSession
   if(is.null(tblhps$clan)){
