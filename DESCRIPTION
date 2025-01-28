@@ -24,4 +24,6 @@ Imports:
    tidyr,
    crayon,
    httr,
-   lubridate
+   lubridate,
+   igraph,
+   asnipe
