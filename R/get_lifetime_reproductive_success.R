@@ -15,9 +15,11 @@
 #' @param ids One or more hyena ids.
 #'
 #' @return A data frame with one row per focal female, containing the columns
-#'   `id`, `offspring_born` (total number of offspring produced), and `lrs`
-#'   (lifetime reproductive success: the number of those offspring that survived
-#'   to age 2).
+#'   `id`, `offspring_born` (total number of offspring produced), `lrs` (lifetime
+#'   reproductive success: the number of those offspring that survived to age 2),
+#'   and `complete_lifespan` (TRUE if the female has a recorded disappearance
+#'   date, so her count covers her whole life; FALSE if she is still alive and
+#'   could still reproduce; NA if her fate is unknown). See [is_alive()].
 #'
 #' @examples
 #' ## lifetime reproductive success for kb
@@ -86,6 +88,10 @@ get_lifetime_reproductive_success <- function(ids){
     result$offspring_born[i] <- nrow(offspring)
     result$lrs[i] <- sum(offspring$surv_to_2)
   }
+
+  # A complete lifespan means the female is no longer alive, so her count covers
+  # her whole reproductive life (suppress is_alive()'s redundant table warnings)
+  result$complete_lifespan <- !suppressWarnings(is_alive(ids))
 
   return(result)
 }

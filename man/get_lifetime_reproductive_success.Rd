@@ -11,9 +11,11 @@ get_lifetime_reproductive_success(ids)
 }
 \value{
 A data frame with one row per focal female, containing the columns
-\code{id}, \code{offspring_born} (total number of offspring produced), and \code{lrs}
-(lifetime reproductive success: the number of those offspring that survived
-to age 2).
+\code{id}, \code{offspring_born} (total number of offspring produced), \code{lrs} (lifetime
+reproductive success: the number of those offspring that survived to age 2),
+and \code{complete_lifespan} (TRUE if the female has a recorded disappearance
+date, so her count covers her whole life; FALSE if she is still alive and
+could still reproduce; NA if her fate is unknown). See \code{\link[=is_alive]{is_alive()}}.
 }
 \description{
 For each focal female, returns the total number of offspring she produced that

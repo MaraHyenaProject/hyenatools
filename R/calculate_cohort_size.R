@@ -26,10 +26,6 @@ calculate_cohort_size <- function(ids){
     data("tblHyenas")
     warning('tblHyenas not in environment. Loading tblHyenas from hyenadata package')
   }
-  if(!exists('tblLifeHistory')){
-    data("tblLifeHistory")
-    warning('tblLifeHistory not in environment. Loading tblLifeHistory from hyenadata package')
-  }
   if(!exists('tblLifeHistory.wide')){
     data("tblLifeHistory.wide")
     warning('tblLifeHistory.wide not in environment. Loading tblLifeHistory.wide from hyenadata package')
@@ -66,6 +62,17 @@ calculate_cohort_size <- function(ids){
     warning(paste0('Some ids provided have no dob. Excluding:\n',
                    paste(dplyr::filter(cubs.of.interest, is.na(dob))$id, collapse = ',')))
     cubs.of.interest <- dplyr::filter(cubs.of.interest, !is.na(dob))
+  }
+
+  ## No cubs left to process (none supplied, all unknown, or none with a dob):
+  ## return a row of NAs per requested id rather than hitting the 1:nrow() loops.
+  if(nrow(cubs.of.interest) == 0){
+    n <- length(ids.full)
+    return(data.frame(id = as.character(ids.full),
+                      size = rep(NA, n),
+                      survive.to.grad = rep(NA, n),
+                      cohort = rep(NA, n),
+                      stringsAsFactors = FALSE))
   }
 
   cubs.of.interest$clan <- cubs.of.interest$dob_event_data

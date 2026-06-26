@@ -17,10 +17,23 @@ test_that("totals offspring produced and those surviving to age 2", {
 
   res <- get_lifetime_reproductive_success("f1")
 
-  expect_setequal(names(res), c("id", "offspring_born", "lrs"))
+  expect_setequal(names(res),
+                  c("id", "offspring_born", "lrs", "complete_lifespan"))
   expect_equal(nrow(res), 1)
   expect_equal(res$offspring_born, 3)
   expect_equal(res$lrs, 2)
+})
+
+test_that("complete_lifespan flags whether the female has disappeared", {
+  setup_lrs()
+  on.exit(clear_fixtures(), add = TRUE)
+
+  # f1 has a disappearance date (complete); f3 is still alive (incomplete)
+  res <- get_lifetime_reproductive_success(c("f1", "f3"))
+
+  expect_equal(res$id, c("f1", "f3"))
+  expect_equal(res$complete_lifespan, c(TRUE, FALSE))
+  expect_equal(res$lrs, c(2, 1))  # f3's one offspring (c4) survived
 })
 
 test_that("a female with no offspring gets a zero row (not dropped)", {

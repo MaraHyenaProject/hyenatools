@@ -33,7 +33,10 @@ get_association_network(
 Returns weighted, undirected networks for each time period
 }
 \description{
-Creates, plots, and returns association networks for specified clans
+Creates, plots, and returns association networks for specified clans. Time
+windows containing fewer than two sessions are skipped, since associations
+cannot be computed from a single observation (a warning is issued for
+single-session windows).
 }
 \examples{
 get_association_network(clan = c('serena.s', 'serena.n', 'happy.zebra'), start = '2009-01-01', end = '2025-01-01', network_duration = '12 months', return_nets = F, plot_nets = T, output_pdf_pathname = '~/Desktop/serena_nets.pdf')
