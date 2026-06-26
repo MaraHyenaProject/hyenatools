@@ -2,16 +2,26 @@
 % Please edit documentation in R/get_maternal_ancestors.R
 \name{get_maternal_ancestors}
 \alias{get_maternal_ancestors}
-\title{Get list of maternal ancestors}
+\title{Get all maternal ancestors of a hyena}
 \usage{
 get_maternal_ancestors(id)
 }
 \arguments{
-\item{id}{A string specifying the hyena id}
+\item{id}{A string specifying the hyena id.}
+}
+\value{
+A character vector ordered from the hyena (first element) to its most
+distant known maternal ancestor (last element). If the hyena has no recorded
+mom, a length-one vector containing just \code{id} is returned.
 }
 \description{
-Returns a vector starting with id and ending with most distant maternal ancestor. This function uses tblHyenas
+Returns a character vector of a hyena's maternal ancestors, found by
+recursively following the \code{mom} column of tblHyenas. The vector starts with
+the hyena itself and ends with its most distant known maternal ancestor (the
+founding matriarch of its matriline). This function uses tblHyenas.
 }
 \examples{
+## the maternal line of knot, from knot up to the founding matriarch
+get_maternal_ancestors('knot')
 
 }

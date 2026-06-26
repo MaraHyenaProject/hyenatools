@@ -16,6 +16,3 @@ Returns a value for expected relatedness between two individuals based on matern
 It assumes all siblingships are half siblings (i.e. sibs = 0.25)
 Returns NA if individuals are unrelated
 }
-\examples{
-
-}
