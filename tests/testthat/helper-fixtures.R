@@ -49,6 +49,36 @@ use_clan_fixtures <- function(envir = globalenv()) {
   invisible(tblClanMembership)
 }
 
+# --- Annual reproductive success fixture -------------------------------------
+# One focal female (f1) with three cubs, plus a male (m1) and a female that died
+# before breeding age (f2):
+#
+#   f1: female, born 2000-01-01, disappeared 2010-01-01
+#       - c1 born 2003-06-01, disappeared 2006-06-01  (lived ~3y -> survived to 2)
+#       - c2 born 2003-09-01, disappeared 2004-01-01  (lived ~4m -> did NOT)
+#       - c3 born 2005-01-01, disappeared NA          (no end date -> survived to 2)
+#   m1: male,   born 2000-01-01                        (not female; 0 offspring)
+#   f2: female, born 2008-01-01, disappeared 2008-06-01 (died before age 2)
+use_ars_fixtures <- function(envir = globalenv()) {
+  tblHyenas <- data.frame(
+    id        = c("f1", "m1", "f2", "c1", "c2", "c3"),
+    mom       = c(NA,   NA,   NA,   "f1", "f1", "f1"),
+    sex       = c("f",  "m",  "f",  "u",  "u",  "u"),
+    birthdate = as.Date(c("2000-01-01", "2000-01-01", "2008-01-01",
+                          "2003-06-01", "2003-09-01", "2005-01-01")),
+    stringsAsFactors = FALSE
+  )
+  tblLifeHistory.wide <- data.frame(
+    id          = c("f1", "m1", "f2", "c1", "c2", "c3"),
+    disappeared = as.Date(c("2010-01-01", NA, "2008-06-01",
+                            "2006-06-01", "2004-01-01", NA)),
+    stringsAsFactors = FALSE
+  )
+  assign("tblHyenas", tblHyenas, envir = envir)
+  assign("tblLifeHistory.wide", tblLifeHistory.wide, envir = envir)
+  invisible(tblHyenas)
+}
+
 # Remove any fixtures we created so tests don't leak global state into each
 # other or into an interactive session.
 clear_fixtures <- function(names = c("tblHyenas", "tblClanMembership",
