@@ -27,3 +27,5 @@ Imports:
    lubridate,
    igraph,
    asnipe
+Suggests:
+    testthat (>= 3.0.0)
